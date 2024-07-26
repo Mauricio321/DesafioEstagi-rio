@@ -5,12 +5,7 @@ namespace DesafioEstagiário.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class FilmeController : ControllerBase
+    public class AutorizacaoController : ControllerBase
     {
-        [HttpGet]
-        public string GetFilmes() 
-        {
-            return null;
-        }
     }
 }
