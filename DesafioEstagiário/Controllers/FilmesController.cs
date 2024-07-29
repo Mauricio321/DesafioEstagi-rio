@@ -36,9 +36,12 @@ namespace DesafioEstagiário.Controllers
         }
 
         [HttpDelete]
-        public void DeletarFilmes(Filme filme) 
+        public void DeletarFilmes(int id) 
         {
-            filmeService.DeleteFilme(filme);
+            filmeService.DeleteFilme(id);
         }
+
+        [HttpPost]
+        public 
     }
 }

@@ -24,8 +24,9 @@ namespace DesafioEstagiário.Controllers
         }
 
         [HttpGet]
-        public void GeneroDisponiveis()
+        public IEnumerable<Genero> GeneroDisponiveis()
         {
+           return generoService.GenerosDisponiveis();
         }
 
         [HttpDelete]
