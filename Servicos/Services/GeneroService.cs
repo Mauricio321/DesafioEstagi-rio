@@ -26,12 +26,20 @@ namespace Servicos.Services
             };
 
             generoRepository.AddGenero(generos);
+            
             generoRepository.SaveChanges();
         }
 
-        public async Task DeleteGenero(int id)
+        public void DeleteGenero(int id)
         {
             generoRepository.DeleteGenero(id);
+
+            generoRepository.SaveChanges();
+        }
+
+        public IEnumerable<Genero> GenerosDisponiveis()
+        {
+            return generoRepository.GenerosDisponiveis();
         }
 
         public async Task<IEnumerable<Genero>> GetGeneros(List<int> id)

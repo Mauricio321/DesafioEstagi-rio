@@ -15,7 +15,7 @@ namespace Servicos.Services
         public FilmeService(IFilmeRepository filmeRepository, IGeneroRepository generoRepository)
         {
             this.filmeRepository = filmeRepository;
-            this.generoRepository = generoRepository;   
+            this.generoRepository = generoRepository;
         }
 
         public string AdicionarFilmes(FilmeDTO filmeDTO)
@@ -48,14 +48,18 @@ namespace Servicos.Services
             };
 
             filmeRepository.AdicionarFilmes(filmes);
-            filmeRepository.SaveChanges();
+            filmeRepository.SaveChangesAsync();
 
             return "livro adicionado com sucesso";
         }
 
-        public void DeleteFilme(Filme filme)
+        public void DeleteFilme(int id)
         {
+            var filme =  filmeRepository.FiltrarFilmePorId(id);
+           
             filmeRepository.DeleteFilme(filme);
+
+            filmeRepository.SaveChangesAsync();
         }
 
         public ListaDeFilmes GetFilmes(int paginas, int quantidadeFilmesPorPagina, List<int> generoIds, string ator, OrdenacaoAvaliacao ordenacaoAvaliacao)

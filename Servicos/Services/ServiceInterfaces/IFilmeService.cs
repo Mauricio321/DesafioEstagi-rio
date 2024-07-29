@@ -7,6 +7,6 @@ namespace Servicos.Services.ServiceInterfaces
     {
         string AdicionarFilmes(FilmeDTO filmeDTO);
         ListaDeFilmes GetFilmes(int paginas, int quantidadeFilmesPorPagina, List<int> generoIds, string ator, OrdenacaoAvaliacao ordenacaoAvaliacao);
-        void DeleteFilme(Filme filme);
+        void DeleteFilme(int id);
     }
 }

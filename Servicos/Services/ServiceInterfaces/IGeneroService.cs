@@ -12,6 +12,7 @@ namespace Servicos.Services.ServiceInterfaces
     {
         Task AddGenero(GeneroDTO genero);
         Task<IEnumerable<Genero>> GetGeneros(List<int> id);
-        Task DeleteGenero(int id);
+        void DeleteGenero(int id);
+        IEnumerable<Genero> GenerosDisponiveis();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Dominio.Models;
 using Infraestrutura.Data;
+using Microsoft.EntityFrameworkCore;
 using Servicos.Interfaces;
 
 namespace Infraestrutura.Repositorys
@@ -19,8 +20,7 @@ namespace Infraestrutura.Repositorys
 
         public void DeleteFilme(Filme filme)
         {
-            var deleteFilme = context.Filmes.Remove(filme);
-            context.SaveChanges();
+            context.Filmes.Remove(filme);
         }
 
 
@@ -75,9 +75,15 @@ namespace Infraestrutura.Repositorys
             return quantidadeAvaliacoes;
         }
 
-        public void SaveChanges()
+        public void SaveChangesAsync()
         {
-            context.SaveChanges();  
+             context.SaveChanges();
+        }
+
+        public  Filme? FiltrarFilmePorId(int id)
+        {
+            var filme =  context.Filmes.FirstOrDefault(f => f.FilmeId == id);
+            return filme;
         }
     }
 }

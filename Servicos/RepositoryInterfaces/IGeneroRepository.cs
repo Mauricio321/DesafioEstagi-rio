@@ -6,7 +6,8 @@ namespace Servicos.RepositoryInterfaces
     {
         Task AddGenero(Genero genero);
         IEnumerable<Genero> GetGeneros(List<int> id);
-        Task DeleteGenero(int id);
+        void DeleteGenero(int id);
         void SaveChanges();
+        IEnumerable<Genero> GenerosDisponiveis();
     }
 }
