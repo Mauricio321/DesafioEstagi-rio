@@ -10,5 +10,10 @@ namespace Servicos.RepositoryInterfaces
     public interface IUserRepository
     {
         void AddUser(Usuario usuario);
+        bool UsuarioExistente(string email);
+        bool AdminExistente(string email);
+        void AddAdmin(Administrador administrador);
+        Usuario GetUserByEmail(string email);
+        void Savechanges();
     }
 }

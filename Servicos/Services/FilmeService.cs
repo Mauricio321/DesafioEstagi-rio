@@ -48,9 +48,24 @@ namespace Servicos.Services
             };
 
             filmeRepository.AdicionarFilmes(filmes);
-            filmeRepository.SaveChangesAsync();
+            filmeRepository.SaveChanges();
 
             return "livro adicionado com sucesso";
+        }
+
+        public Avaliacao AvaliacaoFilme(AvaliacaoDTO avaliacao)
+        {
+            var avaliacoes = new Avaliacao
+            {
+                FilmeId = avaliacao.FilmeId,
+                Nota = avaliacao.Nota,
+                Comentario = avaliacao.Comentario,
+            };
+
+            filmeRepository.AvaliacaoFilme(avaliacoes);
+            filmeRepository.SaveChanges();
+
+            return avaliacoes;
         }
 
         public void DeleteFilme(int id)
@@ -59,7 +74,23 @@ namespace Servicos.Services
            
             filmeRepository.DeleteFilme(filme);
 
-            filmeRepository.SaveChangesAsync();
+            filmeRepository.SaveChanges();
+        }
+
+        public async Task DeleteFilmeAsync(int id)
+        {
+            var filme = await filmeRepository.FiltrarFilmePorIdAsync(id);
+
+            filmeRepository.DeleteFilme(filme);
+
+            await filmeRepository.SaveChangesAsync();
+        }
+
+        public List<Avaliacao> GetAvaliacoes(int id)
+        {
+            var avaliacao =  filmeRepository.FiltrarFilmePorId(id).Avaliacoes.ToList();
+
+            return avaliacao;
         }
 
         public ListaDeFilmes GetFilmes(int paginas, int quantidadeFilmesPorPagina, List<int> generoIds, string ator, OrdenacaoAvaliacao ordenacaoAvaliacao)

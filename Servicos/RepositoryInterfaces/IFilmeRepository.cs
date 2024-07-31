@@ -10,7 +10,10 @@ namespace Servicos.Interfaces
         IEnumerable<Filme> GetFilmess();
         IEnumerable<int> Avaliacoes();
         int QuantidadeAvaliacoes();
-        void SaveChangesAsync();
+        void SaveChanges();
         Filme? FiltrarFilmePorId(int id);
+        Task<Filme?> FiltrarFilmePorIdAsync(int id);
+        Task SaveChangesAsync();
+        void AvaliacaoFilme(Avaliacao avaliacao);
     }
 }
