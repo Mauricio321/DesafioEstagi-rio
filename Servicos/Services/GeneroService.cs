@@ -37,14 +37,14 @@ namespace Servicos.Services
             generoRepository.SaveChanges();
         }
 
-        public IEnumerable<Genero> GenerosDisponiveis()
+        public Task<IEnumerable<Genero>> GenerosDisponiveis()
         {
             return generoRepository.GenerosDisponiveis();
         }
 
         public async Task<IEnumerable<Genero>> GetGeneros(List<int> id)
         {
-            var genero = generoRepository.GetGeneros(id);
+            var genero = await generoRepository.GetGeneros(id);
 
             return genero;
         }

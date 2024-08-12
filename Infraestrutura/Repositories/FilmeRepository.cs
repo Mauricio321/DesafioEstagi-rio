@@ -2,6 +2,7 @@
 using Infraestrutura.Data;
 using Microsoft.EntityFrameworkCore;
 using Servicos.Interfaces;
+using System.Diagnostics.Metrics;
 
 namespace Infraestrutura.Repositorys
 {
@@ -24,66 +25,97 @@ namespace Infraestrutura.Repositorys
         }
 
 
-        public IEnumerable<Filme> GetFilmes(int paginas, int quantidadeFilmesPorPagina, List<int> generoIds, string ator, OrdenacaoAvaliacao ordenacaoAvaliacao)
+        public async Task<IEnumerable<Filme>> GetFilmes(int paginas, int quantidadeFilmesPorPagina, List<int> generoIds, string ator, OrdenacaoAvaliacao ordenacaoAvaliacao)
         {
             var paginasPassadas = paginas - 1;
 
             var paginasSkip = quantidadeFilmesPorPagina * paginasPassadas;
 
-            var filmesFiltrados = context.Filmes.Where(l => l.FilmeId != null);
-
-            var filmes = context.Filmes.ToList();
+            var filmes = context.Filmes.Include(f => f.Avaliacoes).AsQueryable();
 
             //filtrar por genero
             if (generoIds != null)
             {
-                filmesFiltrados = context.Filmes.Where(g => g.Generos == generoIds);
+                filmes = filmes.Where(g => g.Generos == generoIds);
             }
 
-            //ordem alfabetica 
-            if (filmes != null)
-            {
-                filmesFiltrados.OrderBy(f => f.Nome);
-            }
+            //filmes = filmes.OrderBy(f => f.Nome);
 
             //filtrar por ator
             if (ator != null)
             {
-                filmesFiltrados = context.Filmes.Where(f => f.Atores == ator);
+                filmes = filmes.Where(f => f.Atores == ator);
             }
 
-            return filmesFiltrados;
+            if (ordenacaoAvaliacao == OrdenacaoAvaliacao.MaiorParaMenor)
+            {
+                filmes = filmes.OrderBy(f => f.NotaMedia);
+            }
+
+            if (ordenacaoAvaliacao == OrdenacaoAvaliacao.MenorParaMaior)
+            {
+                filmes = filmes.OrderByDescending(f => f.NotaMedia);
+            }
+
+            return await filmes.ToListAsync();
         }
 
-        public IEnumerable<Filme> GetFilmess()
+        public async Task<IEnumerable<int>> Avaliacoes()
         {
-            var filmesFiltrados = context.Filmes.Where(l => l.FilmeId != null);
-            return filmesFiltrados;
-        }
-
-        public IEnumerable<int> Avaliacoes()
-        {
-            IEnumerable<int> avaliacao = context.Avaliacoes.Select(a => a.Nota);
+           IEnumerable<int> avaliacao = await context.Avaliacoes.Select(a => a.Nota).ToArrayAsync();
 
             return avaliacao;
         }
 
-        public int QuantidadeAvaliacoes()
+        public async Task<int> QuantidadeAvaliacoes()
         {
-            int quantidadeAvaliacoes = context.Avaliacoes.Select(a => a.Nota).Sum();
+            int quantidadeAvaliacoes = await context.Avaliacoes.Select(a => a.Nota).SumAsync();
 
             return quantidadeAvaliacoes;
         }
 
-        public void SaveChangesAsync()
+        public void SaveChanges()
         {
-             context.SaveChanges();
+            context.SaveChanges();
         }
 
-        public  Filme? FiltrarFilmePorId(int id)
+        public Task<Filme?> FiltrarFilmePorId(int id)
         {
-            var filme =  context.Filmes.FirstOrDefault(f => f.FilmeId == id);
+            var filme = context.Filmes.FirstOrDefaultAsync(f => f.FilmeId == id);
             return filme;
+        }
+
+        // Verificar depois
+        public void AvaliacaoFilme(Avaliacao avaliacao)
+        {
+            context.Avaliacoes.AddAsync(avaliacao);
+        }
+
+        public Task<Filme?> FiltrarFilmePorIdAsync(int id)
+        {
+            return context.Filmes.FirstOrDefaultAsync(f => f.FilmeId == id);
+        }
+
+        public Task SaveChangesAsync()
+        {
+            return context.SaveChangesAsync();
+        }
+
+        public async Task<IEnumerable<Usuario>> GetUsuario(int id)
+        {
+            return await context.Usuarios.Where(u => u.Id == id).ToListAsync();
+        }
+
+        public Task<Avaliacao?> UsuarioJaAvaliou(int usuarioId, int filmeId)
+        {
+            return context.Avaliacoes.FirstOrDefaultAsync(u => u.FilmeId == filmeId && u.UsuarioId == usuarioId);
+        }
+
+        public void AtualizarAvaliacao(Avaliacao avaliacao)
+        {
+            context.Avaliacoes.Update(avaliacao);
+
+            context.SaveChanges();
         }
     }
 }

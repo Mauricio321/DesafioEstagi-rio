@@ -1,5 +1,6 @@
 ﻿using Dominio.Models;
 using Infraestrutura.Repositories;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Servicos.DTOs;
@@ -18,18 +19,20 @@ namespace DesafioEstagiário.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "manager")]
         public void AddGenero(GeneroDTO genero)
         {
             generoService.AddGenero(genero);    
         }
 
         [HttpGet]
-        public IEnumerable<Genero> GeneroDisponiveis()
+        public Task<IEnumerable<Genero>> GeneroDisponiveis()
         {
            return generoService.GenerosDisponiveis();
         }
 
         [HttpDelete]
+        [Authorize(Roles = "manager")]
         public void DeleteGeneros(int id)
         {
             generoService.DeleteGenero(id);

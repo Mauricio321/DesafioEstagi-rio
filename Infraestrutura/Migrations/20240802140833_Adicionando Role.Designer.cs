@@ -3,6 +3,7 @@ using Infraestrutura.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infraestrutura.Migrations
 {
     [DbContext(typeof(FilmeContext))]
-    partial class FilmeContextModelSnapshot : ModelSnapshot
+    [Migration("20240802140833_Adicionando Role")]
+    partial class AdicionandoRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -161,18 +164,6 @@ namespace Infraestrutura.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Role");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "manager"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "authenticated"
-                        });
                 });
 
             modelBuilder.Entity("Dominio.Models.Usuario", b =>
@@ -184,10 +175,6 @@ namespace Infraestrutura.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -207,17 +194,6 @@ namespace Infraestrutura.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("Usuarios");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Email = "adminlivraria@gmail.com",
-                            Nome = "Admin",
-                            RoleId = 1,
-                            Salt = new byte[0],
-                            Senha = "admin123@"
-                        });
                 });
 
             modelBuilder.Entity("Dominio.Models.Administrador", b =>

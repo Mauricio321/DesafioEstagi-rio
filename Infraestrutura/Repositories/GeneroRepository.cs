@@ -1,5 +1,6 @@
 ﻿using Dominio.Models;
 using Infraestrutura.Data;
+using Microsoft.EntityFrameworkCore;
 using Servicos.RepositoryInterfaces;
 
 namespace Infraestrutura.Repositories
@@ -23,15 +24,15 @@ namespace Infraestrutura.Repositories
             context.Generos.Remove(generoId);
         }
 
-        public IEnumerable<Genero> GenerosDisponiveis()
+        public async Task<IEnumerable<Genero>> GenerosDisponiveis()
         {
-            var generos =  context.Generos.ToList();
+            var generos = await context.Generos.ToListAsync();
             return generos;
         }
 
-        public IEnumerable<Genero> GetGeneros(List<int> id)
+        public async Task<IEnumerable<Genero>> GetGeneros(List<int> id)
         {
-            var genero = context.Generos.Where(g => id.Contains(g.GeneroId));
+            var genero = await context.Generos.Where(g => id.Contains(g.GeneroId)).ToListAsync();
 
             return genero;
         }

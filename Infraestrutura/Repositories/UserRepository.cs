@@ -1,11 +1,7 @@
 ﻿using Dominio.Models;
 using Infraestrutura.Data;
+using Microsoft.EntityFrameworkCore;
 using Servicos.RepositoryInterfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Infraestrutura.Repositories
 {
@@ -20,6 +16,41 @@ namespace Infraestrutura.Repositories
         public void AddUser(Usuario usuario)
         {
             context.Usuarios.Add(usuario);
+        }
+
+        public Task<bool> UsuarioExistente(string email)
+        {
+            return context.Usuarios.AnyAsync(u => u.Email == email);
+        }
+
+        public Task<bool> AdminExistente(string email)
+        {
+            return context.Administradores.AnyAsync(u => u.Email == email);
+        }
+
+        public void Savechanges()
+        {
+            context.SaveChangesAsync();
+        }
+
+        public async Task<Usuario?> GetUserByEmail(string email, CancellationToken cancellationToken)
+        {
+            return await context.Usuarios.Include(r => r.Role).FirstOrDefaultAsync(u => u.Email == email, cancellationToken);
+        }
+
+        public void DeleteUsuario(Usuario usuario)
+        {
+            context.Usuarios.Remove(usuario);
+        }
+
+        public Task<Usuario> FiltrarUsuarioPorId(int id)
+        {
+            return context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
+        }
+
+        public async Task<IEnumerable<Usuario>> ObterTodosUsuarios()
+        {
+            return await context.Usuarios.OrderBy(u => u.Nome).ToListAsync();
         }
     }
 }

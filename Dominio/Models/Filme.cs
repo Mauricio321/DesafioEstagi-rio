@@ -16,12 +16,24 @@ namespace Dominio.Models
         public string? Roteiristas { get; set; }
         public string? Atores { get; set; }
         public int FilmeId { get; set; }
-        public IList<FilmeGenero> Generos { get; set; } = new List<FilmeGenero>();
-        public IList<Avaliacao> Avaliacoes { get; set; } = new List<Avaliacao>();
-        public int NotaMedia => Avaliacoes.Sum(n => n.Nota) / Avaliacoes.Count();
+        public IEnumerable<FilmeGenero> Generos { get; set; } = new List<FilmeGenero>();
+        public IEnumerable<Avaliacao> Avaliacoes { get; set; } = new List<Avaliacao>();
+        public int NotaMedia => GetNotaMedia();
+
+        private int GetNotaMedia()
+        {
+            var quanttidadeAvaliacoes = Avaliacoes.Count();
+            if (quanttidadeAvaliacoes == 0)
+            {
+                return 0;
+            }
+
+            return Avaliacoes.Sum(n => n.Nota) / quanttidadeAvaliacoes;
+        }
+
     }
 
-    public enum OrdenacaoAvaliacao 
+    public enum OrdenacaoAvaliacao
     {
         MenorParaMaior = 1,
         MaiorParaMenor = 2

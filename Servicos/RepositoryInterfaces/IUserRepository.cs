@@ -1,4 +1,5 @@
 ﻿using Dominio.Models;
+using Servicos.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,10 +11,12 @@ namespace Servicos.RepositoryInterfaces
     public interface IUserRepository
     {
         void AddUser(Usuario usuario);
-        bool UsuarioExistente(string email);
-        bool AdminExistente(string email);
-        void AddAdmin(Administrador administrador);
-        Usuario GetUserByEmail(string email);
+        Task<bool> UsuarioExistente(string email);
+        Task<bool> AdminExistente(string email);
+        Task<Usuario?> GetUserByEmail(string email, CancellationToken cancellationToken);
+        void DeleteUsuario(Usuario usuario);
+        Task<Usuario> FiltrarUsuarioPorId(int id);
         void Savechanges();
+        Task<IEnumerable<Usuario>> ObterTodosUsuarios();
     }
 }

@@ -1,8 +1,11 @@
-﻿//using FluentResults;
+﻿using FluentResults;
 
-//namespace Servicos.Erros;
+namespace Servicos.Erros;
 
-//public class NaoEncontrado : Error
-//{
-//    public string Mensagem 
-//}
+public class NaoEncontrado : Error
+{
+    public NaoEncontrado() : base("Não encontrado") {  }
+    public NaoEncontrado(string nomeEntidade) : base($"{nomeEntidade} não foi encontrado/a") 
+    {
+    }
+}

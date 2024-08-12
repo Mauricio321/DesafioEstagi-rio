@@ -10,6 +10,6 @@ namespace Dominio.Models
     {
         public string Nome { get; set; }
         public int GeneroId { get; set; }
-        public IList<FilmeGenero>? Filmes { get; set; }
+        public IEnumerable<FilmeGenero>? Filmes { get; set; }
     }
 }

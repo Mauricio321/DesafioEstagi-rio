@@ -4,6 +4,7 @@ using Servicos.DTOs;
 using Servicos.Interfaces;
 using Servicos.RepositoryInterfaces;
 using Servicos.Services.ServiceInterfaces;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Servicos.Services
 {
@@ -18,18 +19,18 @@ namespace Servicos.Services
             this.generoRepository = generoRepository;
         }
 
-        public string AdicionarFilmes(FilmeDTO filmeDTO)
+        public async Task<Result> AdicionarFilmes(FilmeDTO filmeDTO)
         {
-            var genero = generoRepository.GetGeneros(filmeDTO.GeneroId);
+            var genero = await generoRepository.GetGeneros(filmeDTO.GeneroId);
 
             var generoNaoEncontrado = filmeDTO.GeneroId.Where(generoId => !genero.Any(generos => generos.GeneroId == generoId));
 
             if (generoNaoEncontrado.Any())
             {
-                return "genero nao encontrado";
+                return Result.Fail("Genero não encontrado");
             }
 
-            var generos = genero.Select(genero =>
+            var generos =  genero.Select(genero =>
             new FilmeGenero
             {
                 Genero = genero
@@ -50,16 +51,26 @@ namespace Servicos.Services
             filmeRepository.AdicionarFilmes(filmes);
             filmeRepository.SaveChanges();
 
-            return "livro adicionado com sucesso";
+            return Result.Ok();
         }
 
-        public Avaliacao AvaliacaoFilme(AvaliacaoDTO avaliacao)
+        public async Task<Avaliacao> AvaliacaoFilme(AvaliacaoDTO avaliacaoDto, int usuarioId)
         {
+            var avaliacao = await filmeRepository.UsuarioJaAvaliou(avaliacaoDto.FilmeId, usuarioId);
+
+            if (avaliacao is not null)
+            {
+                avaliacao.Nota = avaliacaoDto.Nota;
+
+                filmeRepository.AtualizarAvaliacao(avaliacao);
+            }
+
             var avaliacoes = new Avaliacao
             {
-                FilmeId = avaliacao.FilmeId,
-                Nota = avaliacao.Nota,
-                Comentario = avaliacao.Comentario,
+                FilmeId = avaliacaoDto.FilmeId,
+                Nota = avaliacaoDto.Nota,
+                Comentario = avaliacaoDto.Comentario,
+                UsuarioId = usuarioId
             };
 
             filmeRepository.AvaliacaoFilme(avaliacoes);
@@ -68,10 +79,10 @@ namespace Servicos.Services
             return avaliacoes;
         }
 
-        public void DeleteFilme(int id)
+        public async void DeleteFilme(int id)
         {
-            var filme =  filmeRepository.FiltrarFilmePorId(id);
-           
+            var filme = await filmeRepository.FiltrarFilmePorId(id);
+
             filmeRepository.DeleteFilme(filme);
 
             filmeRepository.SaveChanges();
@@ -86,34 +97,31 @@ namespace Servicos.Services
             await filmeRepository.SaveChangesAsync();
         }
 
-        public List<Avaliacao> GetAvaliacoes(int id)
+        public async Task<List<Avaliacao>> GetAvaliacoes(int id)
         {
-            var avaliacao =  filmeRepository.FiltrarFilmePorId(id).Avaliacoes.ToList();
+            var avaliacao = await filmeRepository.FiltrarFilmePorId(id);
 
-            return avaliacao;
+            return avaliacao.Avaliacoes.ToList();
         }
 
-        public ListaDeFilmes GetFilmes(int paginas, int quantidadeFilmesPorPagina, List<int> generoIds, string ator, OrdenacaoAvaliacao ordenacaoAvaliacao)
+        public async Task<ListaDeFilmesDto> GetFilmes(int paginas, int quantidadeFilmesPorPagina, List<int> generoIds, string ator, OrdenacaoAvaliacao ordenacaoAvaliacao)
         {
-            IEnumerable<Filme> filmesFiltrados = filmeRepository.GetFilmess();
+            var filmesFiltrados = await filmeRepository.GetFilmes(paginas, quantidadeFilmesPorPagina, generoIds, ator, ordenacaoAvaliacao);
 
-            var paginasPassadas = paginas - 1;
-
-            var paginasSkip = quantidadeFilmesPorPagina * paginasPassadas;
-
-            if (ordenacaoAvaliacao == OrdenacaoAvaliacao.MaiorParaMenor)
+            var listaDeFilmes = new ListaDeFilmesDto
             {
-                filmesFiltrados = filmeRepository.GetFilmess().OrderBy(f => f.NotaMedia);
-            }
-
-            if (ordenacaoAvaliacao == OrdenacaoAvaliacao.MenorParaMaior)
-            {
-                filmesFiltrados = filmeRepository.GetFilmess().OrderByDescending(f => f.NotaMedia);
-            }
-
-            var listaDeFilmes = new ListaDeFilmes
-            {
-                Filmes = filmesFiltrados.Skip(paginasSkip).Take(quantidadeFilmesPorPagina)
+                Filmes = filmesFiltrados.Select(f => new FilmeDTO
+                {
+                    Nome = f.Nome,
+                    AnoDeLancamento = f.AnoDeLancamento,
+                    FaixaEtaria = f.FaixaEtaria,
+                    GeneroId = f.Generos.Select(g => g.GeneroId).ToList(),
+                    Atores = f.Atores,
+                    Direcao = f.Direcao,
+                    Duracao = f.Duracao,
+                    Roteiristas = f.Roteiristas,
+                    NotaMedia = f.NotaMedia,
+                })
             };
 
             return listaDeFilmes;
