@@ -19,9 +19,11 @@ namespace DesafioEstagiário.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AdicionarUsuario(UsuarioDTO usuario)
+        public async Task<IActionResult> AdicionarUsuario(AdministradorDTO usuario)
         {
-            var result = await userService.AddUser(usuario);
+            int roleIdUser = 2;
+
+            var result = await userService.AddAdmin(usuario, roleIdUser);
 
             if (result.IsFailed)
             {

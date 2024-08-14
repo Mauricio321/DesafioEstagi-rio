@@ -63,6 +63,9 @@ namespace Servicos.Services
                 avaliacao.Nota = avaliacaoDto.Nota;
 
                 filmeRepository.AtualizarAvaliacao(avaliacao);
+                filmeRepository.SaveChanges();
+
+                return avaliacao;
             }
 
             var avaliacoes = new Avaliacao

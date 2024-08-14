@@ -22,7 +22,9 @@ namespace DesafioEstagiário.Controllers
         [HttpPost]
         public async Task<Result> AdicionarAdmin(AdministradorDTO administrador)
         {
-            return await userService.AddAdmin(administrador);
+            int roleIdAdmin = 1;
+
+            return await userService.AddAdmin(administrador, roleIdAdmin);
         }
 
         [HttpDelete("Delete-Usuarios")]

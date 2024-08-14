@@ -1,22 +1,15 @@
 ﻿using Dominio.Models;
-using Servicos.DTOs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Servicos.RepositoryInterfaces
+namespace Servicos.RepositoryInterfaces;
+
+public interface IUserRepository
 {
-    public interface IUserRepository
-    {
-        void AddUser(Usuario usuario);
-        Task<bool> UsuarioExistente(string email);
-        Task<bool> AdminExistente(string email);
-        Task<Usuario?> GetUserByEmail(string email, CancellationToken cancellationToken);
-        void DeleteUsuario(Usuario usuario);
-        Task<Usuario> FiltrarUsuarioPorId(int id);
-        void Savechanges();
-        Task<IEnumerable<Usuario>> ObterTodosUsuarios();
-    }
+    void AddUser(Usuario usuario);
+    Task<bool> UsuarioExistente(string email);
+    Task<bool> AdminExistente(string email);
+    Task<Usuario?> GetUserByEmail(string email, CancellationToken cancellationToken);
+    void DeleteUsuario(Usuario usuario);
+    Task<Usuario> FiltrarUsuarioPorId(int id);
+    void Savechanges();
+    Task<IEnumerable<Usuario>> ObterTodosUsuarios();
 }

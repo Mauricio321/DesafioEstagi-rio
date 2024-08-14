@@ -2,7 +2,6 @@
 using Infraestrutura.Data;
 using Microsoft.EntityFrameworkCore;
 using Servicos.Interfaces;
-using System.Diagnostics.Metrics;
 
 namespace Infraestrutura.Repositorys
 {
@@ -62,7 +61,7 @@ namespace Infraestrutura.Repositorys
 
         public async Task<IEnumerable<int>> Avaliacoes()
         {
-           IEnumerable<int> avaliacao = await context.Avaliacoes.Select(a => a.Nota).ToArrayAsync();
+            IEnumerable<int> avaliacao = await context.Avaliacoes.Select(a => a.Nota).ToArrayAsync();
 
             return avaliacao;
         }
