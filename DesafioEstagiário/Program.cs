@@ -10,6 +10,7 @@ using Servicos.RepositoryInterfaces;
 using Servicos.SecretKey;
 using Servicos.Services;
 using Servicos.Services.ServiceInterfaces;
+using Servicos.UseCases.UserUseCases;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -74,6 +75,10 @@ builder.Services.AddScoped<IUserRepository,UserRepository>();
 builder.Services.AddScoped<IFilmeService, FilmeService>();
 builder.Services.AddScoped<IGeneroService, GeneroService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IHashService, HashService>();
+builder.Services.AddMediatR(cfg => {
+    cfg.RegisterServicesFromAssembly(typeof(IAdicionarUsuarioRequest).Assembly);
+});
 
 var app = builder.Build();
 

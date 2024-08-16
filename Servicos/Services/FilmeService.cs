@@ -82,15 +82,6 @@ namespace Servicos.Services
             return avaliacoes;
         }
 
-        public async void DeleteFilme(int id)
-        {
-            var filme = await filmeRepository.FiltrarFilmePorId(id);
-
-            filmeRepository.DeleteFilme(filme);
-
-            filmeRepository.SaveChanges();
-        }
-
         public async Task DeleteFilmeAsync(int id)
         {
             var filme = await filmeRepository.FiltrarFilmePorIdAsync(id);

@@ -8,7 +8,6 @@ namespace Servicos.Services.ServiceInterfaces
     {
         Task<Result> AdicionarFilmes(FilmeDTO filmeDTO);
         Task<ListaDeFilmesDto> GetFilmes(int paginas, int quantidadeFilmesPorPagina, List<int> generoIds, string ator, OrdenacaoAvaliacao ordenacaoAvaliacao);
-        void DeleteFilme(int id);
         Task DeleteFilmeAsync(int id);
         Task<Avaliacao> AvaliacaoFilme(AvaliacaoDTO avaliacao, int id);
         Task<List<Avaliacao>> GetAvaliacoes(int id);
