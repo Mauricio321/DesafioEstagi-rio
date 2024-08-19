@@ -9,7 +9,6 @@ using Microsoft.OpenApi.Models;
 using Servicos.Interfaces;
 using Servicos.Pipelines;
 using Servicos.RepositoryInterfaces;
-using Servicos.SecretKey;
 using Servicos.Services;
 using Servicos.Services.ServiceInterfaces;
 using Servicos.UseCases.UserUseCases;
@@ -45,7 +44,14 @@ builder.Services.AddSwaggerGen(options =>
     );
 });
 
-var key = Encoding.ASCII.GetBytes(Key.Secret);
+var keyEmString = builder.Configuration.GetValue<string>("ENCRYPT_TOKEN_SECRET_KEY")!;
+
+var key = Encoding.ASCII.GetBytes(keyEmString);
+
+builder.Services.Configure<TokenService.Options>(tokenServiceOptions =>
+{
+    tokenServiceOptions.Secret = keyEmString;
+});
 
 builder.Services.AddAuthentication(x =>
 {
@@ -73,15 +79,17 @@ builder.Services.AddDbContext<FilmeContext>(options => options.UseSqlServer(buil
 
 builder.Services.AddScoped<IFilmeRepository, FilmeRepository>();
 builder.Services.AddScoped<IGeneroRepository, GeneroRepository>();
-builder.Services.AddScoped<IUserRepository,UserRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IFilmeService, FilmeService>();
 builder.Services.AddScoped<IGeneroService, GeneroService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IHashService, HashService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddLogging();
 
-builder.Services.AddMediatR(cfg => {
+builder.Services.AddMediatR(cfg =>
+{
     cfg.RegisterServicesFromAssembly(typeof(IAdicionarUsuarioRequest).Assembly);
 
     cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ErrorHandlingBehavior<,>));

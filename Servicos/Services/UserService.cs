@@ -12,10 +12,13 @@ public class UserService : IUserService
 {
     private readonly IUserRepository userRepository;
     private readonly IHashService hashService;
-    public UserService(IUserRepository userRepository, IHashService hashService)
+    private readonly ITokenService tokenService;
+
+    public UserService(IUserRepository userRepository, IHashService hashService, ITokenService tokenService)
     {
         this.userRepository = userRepository;
         this.hashService = hashService;
+        this.tokenService = tokenService;
     }
 
     public async Task<Result> AddAdmin(AdministradorDTO administrador, int roleIdUser)
@@ -89,8 +92,8 @@ public class UserService : IUserService
             return Result.Fail(new BadRequest("Username or password is invalid"));
         }
 
+        var token = tokenService.GenerateToken(user);
 
-        var token = TokenService.GenerateToken(user);
         return Result.Ok(token);
     }
 

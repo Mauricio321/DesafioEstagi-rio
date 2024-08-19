@@ -17,6 +17,7 @@ public class AuthUserRequestHandler : IRequestHandler<AuthUserRequest, Result<st
 {
     private readonly IUserRepository userRepository;
     private readonly IHashService hashService;
+    private readonly ITokenService tokenService;
     public AuthUserRequestHandler(IUserRepository userRepository, IHashService hashService)
     {
         this.userRepository = userRepository;
@@ -38,7 +39,7 @@ public class AuthUserRequestHandler : IRequestHandler<AuthUserRequest, Result<st
         }
 
 
-        var token = TokenService.GenerateToken(user);
+        var token = tokenService.GenerateToken(user);
         return Result.Ok(token);
     }
 }

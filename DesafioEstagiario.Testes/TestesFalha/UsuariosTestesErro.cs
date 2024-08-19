@@ -11,10 +11,11 @@ public class UsuariosTestesErro
 {
     private readonly Mock<IUserRepository> mockUserRepository = new();
     private readonly Mock<IHashService> mockHashService = new();
+    private readonly Mock<ITokenService> mockTokenService = new();
     private readonly UserService userService;
     public UsuariosTestesErro()
     {
-        userService = new(mockUserRepository.Object, mockHashService.Object);
+        userService = new(mockUserRepository.Object, mockHashService.Object, mockTokenService.Object);
     }
 
     [Fact]

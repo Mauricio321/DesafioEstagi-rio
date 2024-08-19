@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FluentResults;
+using Microsoft.AspNetCore.Mvc;
 using Servicos.DTOs;
+using Servicos.Erros;
 using Servicos.RepositoryInterfaces;
 using Servicos.Services.ServiceInterfaces;
 
@@ -19,10 +21,24 @@ public class AutorizacaoController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult AutorizacaoUsuario([FromBody] UsuarioSemNomeDTO usuario, CancellationToken cancellationToken)
+    public async Task<IActionResult> AutorizacaoUsuario([FromBody] UsuarioSemNomeDTO usuario, CancellationToken cancellationToken)
     {
-        var token = userService.AuthUser(usuario.Email, usuario.Senha, cancellationToken);
+        var result = await userService.AuthUser(usuario.Email, usuario.Senha, cancellationToken);
 
-        return Ok(token);
+        if (result.IsFailed)
+        {
+            if (result.Errors[0] is Forbiden)
+            {
+                return StatusCode(StatusCodes.Status403Forbidden, result.Errors[0].Message);
+            }
+            if (result.Errors[0] is BadRequest)
+            {
+                return StatusCode(StatusCodes.Status400BadRequest, result.Errors[0].Message);
+            }
+
+            return StatusCode(StatusCodes.Status500InternalServerError, "Algum erro ocorreu no servidor, ligue para a central");
+        }
+
+        return Ok(result.Value);
     }
 }
