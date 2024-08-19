@@ -1,4 +1,5 @@
-﻿using Dominio.Models;
+﻿using DesafioEstagiário.IResultError;
+using Dominio.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,20 +24,17 @@ namespace DesafioEstagiário.Controllers
 
         [HttpPost]
         [Authorize(Roles = "manager")] 
-        public async Task<ActionResult> AddFilmes(FilmeDTO filme)
+        public async Task<IResult> AddFilmes(FilmeDTO filme)
         {
             var result = await filmeService.AdicionarFilmes(filme);
-
-            if(result.IsFailed)
-                return NotFound(result.Errors.First().Message);
-
-            return Ok();
+           
+            return ResultExtention.Serialize(result);
         }
 
         [HttpGet]
-        public Task<ListaDeFilmesDto> FilmesDispponiveis(int paginas, int quantidadeFilmesPorPagina, [FromQuery] List<int> generoIds, string? ator, OrdenacaoAvaliacao ordenacaoAvaliacao)
+        public async Task<ListaDeFilmesDto> FilmesDispponiveis(int paginas, int quantidadeFilmesPorPagina, [FromQuery] List<int> generoIds, string? ator, OrdenacaoAvaliacao ordenacaoAvaliacao)
         {
-            var filmesDisponiveis = filmeService.GetFilmes(paginas, quantidadeFilmesPorPagina, generoIds, ator, ordenacaoAvaliacao);
+            var filmesDisponiveis = await filmeService.GetFilmes(paginas, quantidadeFilmesPorPagina, generoIds, ator, ordenacaoAvaliacao);
 
             return filmesDisponiveis;
         }
@@ -50,13 +48,13 @@ namespace DesafioEstagiário.Controllers
 
         [HttpPost("Avaliacao")]
         [Authorize]
-        public Task<Avaliacao> AdicionarAvaliacao(AvaliacaoDTO avaliacao)
+        public async Task<Avaliacao> AdicionarAvaliacao(AvaliacaoDTO avaliacao)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 
             var id = int.Parse(identity!.FindFirst("userId")!.Value);
 
-            var avaliacoes = filmeService.AvaliacaoFilme(avaliacao, id);
+            var avaliacoes = await filmeService.AvaliacaoFilme(avaliacao, id);
 
             return avaliacoes;
         }

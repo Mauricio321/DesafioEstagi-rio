@@ -1,8 +1,10 @@
-﻿using FluentResults;
+﻿using DesafioEstagiário.IResultError;
+using FluentResults;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Servicos.DTOs;
+using Servicos.Erros;
 using Servicos.Services.ServiceInterfaces;
 using System.Security.Claims;
 
@@ -20,11 +22,13 @@ namespace DesafioEstagiário.Controllers
         }
 
         [HttpPost]
-        public async Task<Result> AdicionarAdmin(AdministradorDTO administrador)
+        public async Task<IResult> AdicionarAdmin(AdministradorDTO administrador)
         {
             int roleIdAdmin = 1;
 
-            return await userService.AddAdmin(administrador, roleIdAdmin);
+            var result = await userService.AddAdmin(administrador, roleIdAdmin);
+
+            return ResultExtention.Serialize(result);
         }
 
         [HttpDelete("Delete-Usuarios")]

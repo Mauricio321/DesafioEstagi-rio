@@ -20,15 +20,15 @@ namespace DesafioEstagiário.Controllers
 
         [HttpPost]
         [Authorize(Roles = "manager")]
-        public void AddGenero(GeneroDTO genero)
+        public async Task AddGenero(GeneroDTO genero)
         {
-            generoService.AddGenero(genero);    
+            await generoService.AddGenero(genero);
         }
 
         [HttpGet]
-        public Task<IEnumerable<Genero>> GeneroDisponiveis()
+        public async Task<IEnumerable<Genero>> GeneroDisponiveis()
         {
-           return generoService.GenerosDisponiveis();
+            return await generoService.GenerosDisponiveis();
         }
 
         [HttpDelete]
