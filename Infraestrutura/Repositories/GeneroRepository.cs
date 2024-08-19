@@ -39,7 +39,7 @@ namespace Infraestrutura.Repositories
 
         public void SaveChanges()
         {
-            context.SaveChanges();
+            context.SaveChangesAsync();
         }
     }
 }

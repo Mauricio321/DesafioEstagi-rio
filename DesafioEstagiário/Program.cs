@@ -1,11 +1,13 @@
 using Infraestrutura.Data;
 using Infraestrutura.Repositories;
 using Infraestrutura.Repositorys;
+using MediatR;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Servicos.Interfaces;
+using Servicos.Pipelines;
 using Servicos.RepositoryInterfaces;
 using Servicos.SecretKey;
 using Servicos.Services;
@@ -76,8 +78,13 @@ builder.Services.AddScoped<IFilmeService, FilmeService>();
 builder.Services.AddScoped<IGeneroService, GeneroService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IHashService, HashService>();
+
+builder.Services.AddLogging();
+
 builder.Services.AddMediatR(cfg => {
     cfg.RegisterServicesFromAssembly(typeof(IAdicionarUsuarioRequest).Assembly);
+
+    cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ErrorHandlingBehavior<,>));
 });
 
 var app = builder.Build();
