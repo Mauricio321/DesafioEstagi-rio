@@ -1,33 +1,35 @@
 ﻿using Dominio.Models;
+using FluentResults;
 using MediatR;
 using Servicos.RepositoryInterfaces;
 
-namespace Servicos.UseCases.GeneroUseCases
+namespace Servicos.UseCases.GeneroUseCases;
+
+public class AdicionarGeneroRequest : IRequest<Result>
 {
-    public class AdicionarGeneroRequest : IRequest
+    public required string Nome { get; set; }
+}
+
+public class AdicionarGeneroRequestHandler : IRequestHandler<AdicionarGeneroRequest, Result>
+{
+    private readonly IGeneroRepository generoRepository;
+
+    public AdicionarGeneroRequestHandler(IGeneroRepository generoRepository)
     {
-        public string Nome { get; set; }
+        this.generoRepository = generoRepository;
     }
 
-    public class AdicionarGeneroRequestHandler : IRequestHandler<AdicionarGeneroRequest>
+    public async Task<Result> Handle(AdicionarGeneroRequest request, CancellationToken cancellationToken)
     {
-        private readonly IGeneroRepository generoRepository;
-        public AdicionarGeneroRequestHandler(IGeneroRepository generoRepository)
+        var generos = new Genero
         {
-            this.generoRepository = generoRepository;
-        }
-        public Task Handle(AdicionarGeneroRequest request, CancellationToken cancellationToken)
-        {
-            var generos = new Genero
-            {
-                Nome = request.Nome
-            };
+            Nome = request.Nome
+        };
 
-            generoRepository.AddGenero(generos);
+        await generoRepository.AddGenero(generos);
 
-            generoRepository.SaveChanges();
+        await generoRepository.SaveChangesAsync(cancellationToken);
 
-            return Task.CompletedTask;
-        }
+        return Result.Ok();
     }
 }

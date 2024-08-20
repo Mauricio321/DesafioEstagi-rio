@@ -1,12 +1,10 @@
 ﻿using DesafioEstagiário.IResultError;
 using Dominio.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Query.Internal;
 using Servicos.DTOs;
-using Servicos.Services;
-using Servicos.Services.ServiceInterfaces;
+using Servicos.UseCases.FilmeUseCases;
 using System.Security.Claims;
 
 namespace DesafioEstagiário.Controllers
@@ -15,26 +13,26 @@ namespace DesafioEstagiário.Controllers
     [ApiController]
     public class FilmesController : ControllerBase
     {
-        private readonly IFilmeService filmeService;
+        private readonly ISender sender;
 
-        public FilmesController(IFilmeService filmeService)
+        public FilmesController(ISender sender)
         {
-            this.filmeService = filmeService;
+            this.sender = sender;
         }
 
         [HttpPost]
-        [Authorize(Roles = "manager")] 
-        public async Task<IResult> AddFilmes(FilmeDTO filme)
+        [Authorize(Roles = "manager")]
+        public async Task<IResult> AddFilmes(AdicionarFilmeRequest request)
         {
-            var result = await filmeService.AdicionarFilmes(filme);
-           
+            var result = await sender.Send(request);
+
             return ResultExtention.Serialize(result);
         }
 
         [HttpGet]
         public async Task<ListaDeFilmesDto> FilmesDispponiveis(int paginas, int quantidadeFilmesPorPagina, [FromQuery] List<int> generoIds, string? ator, OrdenacaoAvaliacao ordenacaoAvaliacao)
         {
-            var filmesDisponiveis = await filmeService.GetFilmes(paginas, quantidadeFilmesPorPagina, generoIds, ator, ordenacaoAvaliacao);
+            var filmesDisponiveis = await sender.Send(new GetFilmesRequest { Ator = ator, generoIds = generoIds, OrdenacaoAvaliacao = ordenacaoAvaliacao, paginas = paginas, quantidadeFilmesPorPagina = quantidadeFilmesPorPagina });
 
             return filmesDisponiveis;
         }
@@ -43,18 +41,18 @@ namespace DesafioEstagiário.Controllers
         [Authorize(Roles = "manager")]
         public async Task DeletarFilmes(int id)
         {
-            await filmeService.DeleteFilmeAsync(id);
+            await sender.Send(new DeleteFilmeRequest { Id = id });
         }
 
         [HttpPost("Avaliacao")]
         [Authorize]
-        public async Task<Avaliacao> AdicionarAvaliacao(AvaliacaoDTO avaliacao)
+        public async Task<Avaliacao> AdicionarAvaliacao(AvaliacaoFilmeRequest request)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 
             var id = int.Parse(identity!.FindFirst("userId")!.Value);
 
-            var avaliacoes = await filmeService.AvaliacaoFilme(avaliacao, id);
+            var avaliacoes = await sender.Send(new AvaliacaoFilmeRequest { Comentario = request.Comentario, FilmeId = request.FilmeId, Nota = request.Nota, UsuarioId = id });
 
             return avaliacoes;
         }

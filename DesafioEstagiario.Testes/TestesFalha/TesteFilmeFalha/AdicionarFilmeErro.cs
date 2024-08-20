@@ -1,34 +1,32 @@
 ﻿using Dominio.Models;
 using Moq;
-using Servicos.DTOs;
 using Servicos.Interfaces;
 using Servicos.RepositoryInterfaces;
-using Servicos.Services;
+using Servicos.UseCases.FilmeUseCases;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DesafioEstagiario.Testes.TestesFalha
+namespace DesafioEstagiario.Testes.TestesFalha12345.TesteFilmeFalha
 {
-    public class FilmesTestesErro
+    public class AdicionarFilmeFalha
     {
         private readonly Mock<IFilmeRepository> mockFilmeRepository = new();
         private readonly Mock<IGeneroRepository> mockGeneroReposity = new();
-        private readonly FilmeService filmeService;
-        private readonly GeneroService generoService;
+        private readonly AdicionarFilmeRequestHandler adicionarFilme;
 
-        public FilmesTestesErro()
+        public AdicionarFilmeFalha()
         {
-            filmeService = new(mockFilmeRepository.Object, mockGeneroReposity.Object);
+            adicionarFilme = new(mockFilmeRepository.Object, mockGeneroReposity.Object);
         }
 
         [Fact]
         public async Task AdicionarFilmeErro()
         {
             //Arange
-            var generoIds = new List<int> { }; //Genero nulo 
+            var generoIds = new List<int> { }; //Genero nulo
 
 
             const string Nome = "Anabelle";
@@ -40,7 +38,7 @@ namespace DesafioEstagiario.Testes.TestesFalha
             const int Duracao = 2;
 
 
-            var filme = new FilmeDTO
+            var filme = new AdicionarFilmeRequest
             {
                 Nome = Nome,
                 AnoDeLancamento = AnoDeLancamento,
@@ -49,18 +47,18 @@ namespace DesafioEstagiario.Testes.TestesFalha
                 Atores = Atores,
                 Duracao = Duracao,
                 Roteiristas = Roteiristas,
-                GeneroId = generoIds
+                GeneroId = generoIds,
             };
 
             var listaDeGeneros = new Genero[] { new() { Nome = "Terror", GeneroId = 1 } };
 
             var genero = mockGeneroReposity.Setup(g => g.GetGeneros(generoIds)).ReturnsAsync(listaDeGeneros);
-
+            var cancellationToken = new CancellationToken();
             //Act
-            var filmeAdicionado = await filmeService.AdicionarFilmes(filme);
+            var filmeAdicionado = await adicionarFilme.Handle(filme, cancellationToken);
 
             //Assert
-            Assert.True(filmeAdicionado.IsSuccess);
+            Assert.True(filmeAdicionado.IsFailed);
         }
     }
 }

@@ -16,12 +16,10 @@ namespace DesafioEstagiário.Controllers
     [ApiController]
     public class UsuarioController : ControllerBase
     {
-        private readonly IUserService userService;
         private readonly ISender sender;
 
-        public UsuarioController(IUserService userService, ISender sender)
+        public UsuarioController(ISender sender)
         {
-            this.userService = userService;
             this.sender = sender;
         }
 
@@ -42,14 +40,14 @@ namespace DesafioEstagiário.Controllers
 
             var id = int.Parse(identity!.FindFirst("userId")!.Value);
 
-           await userService.DeleteUser(id);
+            await sender.Send(new DeleteUserRequest { Id = id });
         }
 
         [HttpGet]
         [Authorize(Roles = "manager")]
         public async Task<IEnumerable<Usuario>> ObterTodosUsuarios()
         {
-            return await userService.ObterTodosUsuarios();
+            return await sender.Send(new ObterTodosUsuariosRequest());
         }
     }
 }

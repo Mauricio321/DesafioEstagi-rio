@@ -10,6 +10,6 @@ public interface IUserRepository
     Task<Usuario?> GetUserByEmail(string email, CancellationToken cancellationToken);
     void DeleteUsuario(Usuario usuario);
     Task<Usuario> FiltrarUsuarioPorId(int id);
-    void Savechanges();
+    Task Savechanges();
     Task<IEnumerable<Usuario>> ObterTodosUsuarios();
 }

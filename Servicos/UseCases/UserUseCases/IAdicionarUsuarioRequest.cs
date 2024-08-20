@@ -59,7 +59,6 @@ public class AdicionarUsuarioBaseRequestHandler : IRequestHandler<AdicionarUsuar
 
     private async Task<Result> Handle(IAdicionarUsuarioRequest request, CancellationToken cancellationToken)
     {
-        throw new NotImplementedException();
 
         var admin = new Usuario
         {

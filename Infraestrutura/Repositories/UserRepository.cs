@@ -28,9 +28,11 @@ namespace Infraestrutura.Repositories
             return context.Administradores.AnyAsync(u => u.Email == email);
         }
 
-        public void Savechanges()
+        public Task Savechanges()
         {
             context.SaveChangesAsync();
+
+            return Task.CompletedTask;
         }
 
         public async Task<Usuario?> GetUserByEmail(string email, CancellationToken cancellationToken)

@@ -1,10 +1,9 @@
-﻿using Dominio.Models;
-using Infraestrutura.Repositories;
+﻿using DesafioEstagiário.IResultError;
+using Dominio.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Servicos.DTOs;
-using Servicos.Services.ServiceInterfaces;
+using Servicos.UseCases.GeneroUseCases;
 
 namespace DesafioEstagiário.Controllers
 {
@@ -12,30 +11,32 @@ namespace DesafioEstagiário.Controllers
     [ApiController]
     public class GenerosController : ControllerBase
     {
-        private readonly IGeneroService generoService;
-        public GenerosController(IGeneroService generoService)
+        private readonly ISender sender;
+        public GenerosController(ISender sender)
         {
-            this.generoService = generoService;
+            this.sender = sender;
         }
 
         [HttpPost]
         [Authorize(Roles = "manager")]
-        public async Task AddGenero(GeneroDTO genero)
+        public async Task<IResult> AddGenero(AdicionarGeneroRequest request, CancellationToken cancellationToken)
         {
-            await generoService.AddGenero(genero);
+            var result = await sender.Send(request, cancellationToken);
+
+            return ResultExtention.Serialize(result);
         }
 
         [HttpGet]
         public async Task<IEnumerable<Genero>> GeneroDisponiveis()
         {
-            return await generoService.GenerosDisponiveis();
+            return await sender.Send(new GenerosDisponiveisRequest());
         }
 
         [HttpDelete]
         [Authorize(Roles = "manager")]
         public void DeleteGeneros(int id)
         {
-            generoService.DeleteGenero(id);
+            sender.Send(new DeleteGeneroRequest { Id = id });
         }
     }
 }

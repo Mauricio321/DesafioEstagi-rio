@@ -9,7 +9,6 @@ namespace Servicos.Interfaces
         void DeleteFilme(Filme filme);
         Task<IEnumerable<int>> Avaliacoes();
         Task<int> QuantidadeAvaliacoes();
-        void SaveChanges();
         Task<Filme?> FiltrarFilmePorId(int id);
         Task<Filme?> FiltrarFilmePorIdAsync(int id);
         Task SaveChangesAsync();

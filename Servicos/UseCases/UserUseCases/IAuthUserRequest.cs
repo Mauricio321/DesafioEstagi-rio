@@ -2,7 +2,6 @@
 using MediatR;
 using Servicos.Erros;
 using Servicos.RepositoryInterfaces;
-using Servicos.Services;
 using Servicos.Services.ServiceInterfaces;
 
 namespace Servicos.UseCases.UserUseCases;

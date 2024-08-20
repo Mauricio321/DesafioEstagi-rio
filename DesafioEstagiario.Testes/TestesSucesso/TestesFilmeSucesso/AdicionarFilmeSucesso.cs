@@ -3,26 +3,24 @@ using Moq;
 using Servicos.DTOs;
 using Servicos.Interfaces;
 using Servicos.RepositoryInterfaces;
-using Servicos.Services;
+using Servicos.UseCases.FilmeUseCases;
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DesafioEstagiario.Testes.Testes
+namespace DesafioEstagiario.Testes.TestesSucesso.TestesFilmeSucesso
 {
-    public class FilmesTestes
+    public class AdicionarFilmeSucesso
     {
         private readonly Mock<IFilmeRepository> mockFilmeRepository = new();
         private readonly Mock<IGeneroRepository> mockGeneroReposity = new();
-        private readonly FilmeService filmeService;
-        private readonly GeneroService generoService;
+        private readonly AdicionarFilmeRequestHandler adicionarFilme;
 
-        public FilmesTestes()
+        public AdicionarFilmeSucesso()
         {
-            filmeService = new(mockFilmeRepository.Object, mockGeneroReposity.Object);
+            adicionarFilme = new(mockFilmeRepository.Object, mockGeneroReposity.Object);
         }
 
         [Fact]
@@ -41,7 +39,7 @@ namespace DesafioEstagiario.Testes.Testes
             const int Duracao = 2;
 
 
-            var filme = new FilmeDTO
+            var filme = new AdicionarFilmeRequest
             {
                 Nome = Nome,
                 AnoDeLancamento = AnoDeLancamento,
@@ -50,41 +48,19 @@ namespace DesafioEstagiario.Testes.Testes
                 Atores = Atores,
                 Duracao = Duracao,
                 Roteiristas = Roteiristas,
-                GeneroId = generoIds
+                GeneroId = generoIds,
             };
 
-            var listaDeGeneros = new Genero[] { new(){ Nome = "Terror", GeneroId = 1 } };
+            var listaDeGeneros = new Genero[] { new() { Nome = "Terror", GeneroId = 1 } };
 
             var genero = mockGeneroReposity.Setup(g => g.GetGeneros(generoIds)).ReturnsAsync(listaDeGeneros);
-
+            var cancellationToken = new CancellationToken();
             //Act
-            var filmeAdicionado = await filmeService.AdicionarFilmes(filme);
+            var filmeAdicionado = await adicionarFilme.Handle(filme, cancellationToken);
 
             //Assert
             Assert.True(filmeAdicionado.IsSuccess);
 
-        }
-
-        [Fact]
-        public async void AvaliarFilme()
-        {
-            //Arrange
-            string comentario = "Muito bom";
-            var usuarioId = 1;
-
-            var avaliacoes = new AvaliacaoDTO
-            {
-                FilmeId = 1,
-                Nota = 5,
-                Comentario = comentario
-            };
-
-            //Act
-            var filmeAvaliado = await filmeService.AvaliacaoFilme(avaliacoes, usuarioId);
-
-            //Assert
-            mockFilmeRepository.Verify(mf => mf.AvaliacaoFilme(filmeAvaliado));
-            mockFilmeRepository.Verify(mf => mf.SaveChanges());
         }
     }
 }

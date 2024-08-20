@@ -30,7 +30,7 @@ namespace Servicos.UseCases.FilmeUseCases
                 avaliacao.Nota = request.Nota;
 
                 filmeRepository.AtualizarAvaliacao(avaliacao);
-                filmeRepository.SaveChanges();
+                await filmeRepository.SaveChangesAsync();
 
                 return avaliacao;
             }
@@ -44,7 +44,7 @@ namespace Servicos.UseCases.FilmeUseCases
             };
 
             filmeRepository.AvaliacaoFilme(avaliacoes);
-            filmeRepository.SaveChanges();
+            await filmeRepository.SaveChangesAsync();
 
             return avaliacoes;
         }

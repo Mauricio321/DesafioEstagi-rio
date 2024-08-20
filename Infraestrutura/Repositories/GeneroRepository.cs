@@ -37,9 +37,11 @@ namespace Infraestrutura.Repositories
             return genero;
         }
 
-        public void SaveChanges()
+        public Task SaveChangesAsync(CancellationToken cancellationToken)
         {
             context.SaveChangesAsync();
+
+            return Task.CompletedTask;
         }
     }
 }

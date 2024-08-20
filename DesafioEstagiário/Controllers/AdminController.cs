@@ -1,11 +1,13 @@
 ﻿using DesafioEstagiário.IResultError;
 using FluentResults;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Servicos.DTOs;
 using Servicos.Erros;
 using Servicos.Services.ServiceInterfaces;
+using Servicos.UseCases.UserUseCases;
 using System.Security.Claims;
 
 namespace DesafioEstagiário.Controllers
@@ -15,18 +17,17 @@ namespace DesafioEstagiário.Controllers
     [Authorize(Roles = "manager")]
     public class AdminController : ControllerBase
     {
-        private readonly IUserService userService;
-        public AdminController(IUserService userService)
+        private readonly ISender sender;
+        public AdminController(ISender sender)
         {
-            this.userService = userService;
+            this.sender = sender;
         }
 
         [HttpPost]
-        public async Task<IResult> AdicionarAdmin(AdministradorDTO administrador)
+        public async Task<IResult> AdicionarAdmin(AdicionarAdministradorRequest request)
         {
-            int roleIdAdmin = 1;
 
-            var result = await userService.AddAdmin(administrador, roleIdAdmin);
+            var result = await sender.Send(new AdicionarAdministradorRequest { Nome = request.Nome, Email = request.Email, Senha = request.Senha });
 
             return ResultExtention.Serialize(result);
         }
@@ -34,7 +35,7 @@ namespace DesafioEstagiário.Controllers
         [HttpDelete("Delete-Usuarios")]
         public void DeleteOutrosUsuarios(int id)
         {
-            userService.DeleteUser(id);
+            sender.Send(new DeleteUserRequest { Id = id });
         }
 
         [HttpDelete("Delete-Me")]
@@ -44,7 +45,7 @@ namespace DesafioEstagiário.Controllers
 
             var id = int.Parse(identity!.FindFirst("userId")!.Value);
 
-            userService.DeleteUser(id);
+            sender.Send(new DeleteUserRequest { Id = id });
         }
     }
 }

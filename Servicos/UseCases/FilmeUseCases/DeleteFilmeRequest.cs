@@ -10,7 +10,7 @@ namespace Servicos.UseCases.FilmeUseCases
 {
     public class DeleteFilmeRequest : IRequest
     {
-        public int id { get; set; }
+        public int Id { get; set; }
     }
 
     public class DeleteFilmeAsyncRequestHandler : IRequestHandler<DeleteFilmeRequest>
@@ -22,7 +22,7 @@ namespace Servicos.UseCases.FilmeUseCases
         }
         public async Task Handle(DeleteFilmeRequest request, CancellationToken cancellationToken)
         {
-            var filme = await filmeRepository.FiltrarFilmePorIdAsync(request.id);
+            var filme = await filmeRepository.FiltrarFilmePorIdAsync(request.Id);
 
             filmeRepository.DeleteFilme(filme);
 

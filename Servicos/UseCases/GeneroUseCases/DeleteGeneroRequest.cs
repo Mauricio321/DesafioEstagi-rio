@@ -24,7 +24,7 @@ namespace Servicos.UseCases.GeneroUseCases
         {
             generoRepository.DeleteGenero(request.Id);
 
-            generoRepository.SaveChanges();
+            generoRepository.SaveChangesAsync();
 
             return Task.CompletedTask;
         }

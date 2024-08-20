@@ -80,9 +80,6 @@ builder.Services.AddDbContext<FilmeContext>(options => options.UseSqlServer(buil
 builder.Services.AddScoped<IFilmeRepository, FilmeRepository>();
 builder.Services.AddScoped<IGeneroRepository, GeneroRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IFilmeService, FilmeService>();
-builder.Services.AddScoped<IGeneroService, GeneroService>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 

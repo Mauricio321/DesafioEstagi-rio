@@ -58,7 +58,7 @@ public class AdicionarFilmeRequestHandler : IRequestHandler<AdicionarFilmeReques
         };
 
         filmeRepository.AdicionarFilmes(filmes);
-        filmeRepository.SaveChanges();
+        await filmeRepository.SaveChangesAsync();
 
         return Result.Ok();
     }

@@ -73,11 +73,6 @@ namespace Infraestrutura.Repositorys
             return quantidadeAvaliacoes;
         }
 
-        public void SaveChanges()
-        {
-            context.SaveChanges();
-        }
-
         public Task<Filme?> FiltrarFilmePorId(int id)
         {
             var filme = context.Filmes.FirstOrDefaultAsync(f => f.FilmeId == id);
