@@ -13,9 +13,9 @@ namespace Infraestrutura.Repositories
             this.context = context;
         }
 
-        public void AddUser(Usuario usuario)
+        public async Task AddUser(Usuario usuario)
         {
-            context.Usuarios.Add(usuario);
+            await context.Usuarios.AddAsync(usuario);
         }
 
         public Task<bool> UsuarioExistente(string email)
@@ -25,14 +25,12 @@ namespace Infraestrutura.Repositories
 
         public Task<bool> AdminExistente(string email)
         {
-            return context.Administradores.AnyAsync(u => u.Email == email);
+            return context.Usuarios.AnyAsync(u => u.Email == email);
         }
 
-        public Task Savechanges()
+        public async Task Savechanges()
         {
-            context.SaveChangesAsync();
-
-            return Task.CompletedTask;
+            await context.SaveChangesAsync();
         }
 
         public async Task<Usuario?> GetUserByEmail(string email, CancellationToken cancellationToken)
@@ -45,7 +43,7 @@ namespace Infraestrutura.Repositories
             context.Usuarios.Remove(usuario);
         }
 
-        public Task<Usuario> FiltrarUsuarioPorId(int id)
+        public Task<Usuario?> FiltrarUsuarioPorId(int id)
         {
             return context.Usuarios.FirstOrDefaultAsync(u => u.Id == id);
         }
