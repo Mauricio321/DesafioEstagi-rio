@@ -1,16 +1,15 @@
 ﻿using FluentResults;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Servicos.Erros
+namespace Servicos.Erros;
+
+public class BadRequest : Error
 {
-    public class BadRequest : Error
+    public List<IEnumerable<ValidationFailure>> Failures { get; }
+
+    public BadRequest(List<IEnumerable<ValidationFailure>> failures) : base("Requisição mal feita")
     {
-        public BadRequest(string mensagem) : base(mensagem)
-        {
-        }
+        Failures = failures;
     }
 }
+
+public readonly record struct ValidationFailure(string PropertyName, IEnumerable<string> Errors);

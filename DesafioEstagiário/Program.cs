@@ -1,3 +1,4 @@
+using FluentValidation;
 using Infraestrutura.Data;
 using Infraestrutura.Repositories;
 using Infraestrutura.Repositorys;
@@ -11,6 +12,7 @@ using Servicos.Pipelines;
 using Servicos.RepositoryInterfaces;
 using Servicos.Services;
 using Servicos.Services.ServiceInterfaces;
+using Servicos.UseCases.FilmeUseCases;
 using Servicos.UseCases.UserUseCases;
 using System.Text;
 
@@ -82,6 +84,9 @@ builder.Services.AddScoped<IGeneroRepository, GeneroRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IHashService, HashService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IValidator<AdicionarUsuarioRequest>, IAdicionarUsuarioRequest.Validator<AdicionarUsuarioRequest>>();
+builder.Services.AddScoped<IValidator<AdicionarAdministradorRequest>, IAdicionarUsuarioRequest.Validator<AdicionarAdministradorRequest>>();
+builder.Services.AddValidatorsFromAssemblyContaining<AdicionarFilmeRequest.Validator>();
 
 builder.Services.AddLogging();
 
@@ -90,6 +95,7 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(typeof(IAdicionarUsuarioRequest).Assembly);
 
     cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ErrorHandlingBehavior<,>));
+    cfg.AddBehavior(typeof(IPipelineBehavior<,>), typeof(RequestFormatValidatorBehavior<,>));
 });
 
 var app = builder.Build();

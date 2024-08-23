@@ -1,5 +1,6 @@
 ﻿using Dominio.Models;
 using FluentResults;
+using FluentValidation;
 using MediatR;
 using Servicos.Interfaces;
 using Servicos.RepositoryInterfaces;
@@ -17,17 +18,29 @@ public class AdicionarFilmeRequest : IRequest<Result>
     public string? Atores { get; set; }
     public List<int> GeneroId { get; set; }
     public float NotaMedia { get; set; }
+
+    public class Validator : AbstractValidator<AdicionarFilmeRequest>
+    {
+        public Validator()
+        {
+            RuleFor(l => l.GeneroId).NotEmpty().WithMessage("Filme nao pode ser adicionado sem genero");
+            RuleFor(l => l.Duracao).NotNull().NotEmpty();
+            RuleFor(l => l.Nome).NotNull().NotEmpty().Length(2, 85);
+        }
+    }
 }
 
 public class AdicionarFilmeRequestHandler : IRequestHandler<AdicionarFilmeRequest, Result>
 {
     private readonly IFilmeRepository filmeRepository;
     private readonly IGeneroRepository generoRepository;
+
     public AdicionarFilmeRequestHandler(IFilmeRepository filmeRepository, IGeneroRepository generoRepository)
     {
         this.filmeRepository = filmeRepository;
         this.generoRepository = generoRepository;
     }
+
     public async Task<Result> Handle(AdicionarFilmeRequest request, CancellationToken cancellationToken)
     {
         var genero = await generoRepository.GetGeneros(request.GeneroId);
