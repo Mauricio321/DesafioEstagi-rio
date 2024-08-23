@@ -32,29 +32,31 @@ namespace DesafioEstagiário.Controllers
         [HttpGet]
         public async Task<ListaDeFilmesDto> FilmesDispponiveis(int paginas, int quantidadeFilmesPorPagina, [FromQuery] List<int> generoIds, string? ator, OrdenacaoAvaliacao ordenacaoAvaliacao)
         {
-            var filmesDisponiveis = await sender.Send(new GetFilmesRequest { Ator = ator, generoIds = generoIds, OrdenacaoAvaliacao = ordenacaoAvaliacao, paginas = paginas, quantidadeFilmesPorPagina = quantidadeFilmesPorPagina });
+            var filmesDisponiveis = await sender.Send(new GetFilmesRequest { Ator = ator, GeneroIds = generoIds, OrdenacaoAvaliacao = ordenacaoAvaliacao, Paginas = paginas, QuantidadeFilmesPorPagina = quantidadeFilmesPorPagina });
 
             return filmesDisponiveis;
         }
 
         [HttpDelete]
         [Authorize(Roles = "manager")]
-        public async Task DeletarFilmes(int id)
+        public async Task<IResult> DeletarFilmes(int id)
         {
-            await sender.Send(new DeleteFilmeRequest { Id = id });
+            var result = await sender.Send(new DeleteFilmeRequest { Id = id });
+
+            return ResultExtention.Serialize(result);
         }
 
         [HttpPost("Avaliacao")]
         [Authorize]
-        public async Task<Avaliacao> AdicionarAvaliacao(AvaliacaoFilmeRequest request)
+        public async Task<IResult> AdicionarAvaliacao(AvaliacaoFilmeRequest request)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
 
             var id = int.Parse(identity!.FindFirst("userId")!.Value);
 
-            var avaliacoes = await sender.Send(new AvaliacaoFilmeRequest { Comentario = request.Comentario, FilmeId = request.FilmeId, Nota = request.Nota, UsuarioId = id });
+            var result = await sender.Send(new AvaliacaoFilmeRequest { Comentario = request.Comentario, FilmeId = request.FilmeId, Nota = request.Nota, UsuarioId = id });
 
-            return avaliacoes;
+            return ResultExtention.Serialize(result);
         }
     }
 }

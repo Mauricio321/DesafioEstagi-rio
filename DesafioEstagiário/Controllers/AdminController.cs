@@ -1,12 +1,7 @@
 ﻿using DesafioEstagiário.IResultError;
-using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Servicos.DTOs;
-using Servicos.Erros;
-using Servicos.Services.ServiceInterfaces;
 using Servicos.UseCases.UserUseCases;
 using System.Security.Claims;
 

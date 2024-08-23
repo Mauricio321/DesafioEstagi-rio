@@ -1,11 +1,8 @@
 ﻿using DesafioEstagiário.IResultError;
-using FluentResults;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using Servicos.DTOs;
-using Servicos.Erros;
 using Servicos.RepositoryInterfaces;
-using Servicos.Services.ServiceInterfaces;
 using Servicos.UseCases.UserUseCases;
 
 namespace DesafioEstagiário.Controllers;
@@ -26,7 +23,7 @@ public class AutorizacaoController : ControllerBase
     [HttpPost]
     public async Task<IResult> AutorizacaoUsuario([FromBody] UsuarioSemNomeDTO usuario, CancellationToken cancellationToken)
     {
-        var result = await sender.Send(new AuthUserRequest { Email = usuario.Email, Senha = usuario.Senha });
+        var result = await sender.Send(new AuthUserRequest { Email = usuario.Email, Senha = usuario.Senha }, cancellationToken);
 
         return ResultExtention.Serialize(result);
     }
