@@ -1,5 +1,6 @@
 ﻿using Dominio.Models;
 using FluentResults;
+using FluentValidation;
 using MediatR;
 using Servicos.RepositoryInterfaces;
 
@@ -8,6 +9,14 @@ namespace Servicos.UseCases.GeneroUseCases;
 public class AdicionarGeneroRequest : IRequest<Result>
 {
     public required string Nome { get; set; }
+
+    public class AdicionarGeneroValidator : AbstractValidator<AdicionarGeneroRequest> 
+    {
+        public AdicionarGeneroValidator() 
+        {
+            RuleFor(a => a.Nome).NotEmpty().NotEmpty();
+        }   
+    }
 }
 
 public class AdicionarGeneroRequestHandler : IRequestHandler<AdicionarGeneroRequest, Result>

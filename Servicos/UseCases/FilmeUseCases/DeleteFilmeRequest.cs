@@ -1,32 +1,30 @@
-﻿using MediatR;
+﻿using FluentResults;
+using FluentValidation;
+using MediatR;
 using Servicos.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Servicos.UseCases.FilmeUseCases
 {
-    public class DeleteFilmeRequest : IRequest
+    public class DeleteFilmeRequest : IRequest<Result>
     {
         public int Id { get; set; }
     }
-
-    public class DeleteFilmeAsyncRequestHandler : IRequestHandler<DeleteFilmeRequest>
+    public class DeleteFilmeAsyncRequestHandler : IRequestHandler<DeleteFilmeRequest, Result>
     {
         private readonly IFilmeRepository filmeRepository;
         public DeleteFilmeAsyncRequestHandler(IFilmeRepository filmeRepository)
         {
             this.filmeRepository = filmeRepository;
         }
-        public async Task Handle(DeleteFilmeRequest request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(DeleteFilmeRequest request, CancellationToken cancellationToken)
         {
             var filme = await filmeRepository.FiltrarFilmePorIdAsync(request.Id);
 
             filmeRepository.DeleteFilme(filme);
 
             await filmeRepository.SaveChangesAsync();
+
+            return Result.Ok();
         }
     }
 }

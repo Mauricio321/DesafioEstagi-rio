@@ -1,6 +1,8 @@
 ﻿using Dominio.Models;
+using FluentValidation;
 using MediatR;
 using Servicos.RepositoryInterfaces;
+using Servicos.UseCases.FilmeUseCases;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +14,14 @@ namespace Servicos.UseCases.GeneroUseCases
     public class GetGenerosRequest : IRequest<IEnumerable<Genero>>
     {
         public List<int> Id { get; set; }   
+
+        public class GetGenerosValidator : AbstractValidator<GetGenerosRequest> 
+        {
+            public GetGenerosValidator() 
+            {
+                RuleFor(g => g.Id).NotEmpty().NotNull();
+            }
+        }
     }
 
     public class GetGenerosRequestHandler : IRequestHandler<GetGenerosRequest, IEnumerable<Genero>>

@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Servicos.RepositoryInterfaces;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,14 @@ namespace Servicos.UseCases.GeneroUseCases
     public class DeleteGeneroRequest : IRequest
     {
         public int Id { get; set; }
+
+        public class DeleteGeneroValidator : AbstractValidator<DeleteGeneroRequest> 
+        {
+            public DeleteGeneroValidator() 
+            {
+                RuleFor(d => d.Id).NotNull().NotEmpty();
+            }  
+        }
     }
 
     public class DeleteGeneroRequestHandler : IRequestHandler<DeleteGeneroRequest>

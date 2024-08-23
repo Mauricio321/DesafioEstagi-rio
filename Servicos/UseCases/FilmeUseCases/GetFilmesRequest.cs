@@ -1,4 +1,5 @@
 ﻿using Dominio.Models;
+using FluentValidation;
 using MediatR;
 using Servicos.DTOs;
 using Servicos.Interfaces;
@@ -7,12 +8,20 @@ namespace Servicos.UseCases.FilmeUseCases;
 
 public class GetFilmesRequest : IRequest<ListaDeFilmesDto>
 {
-    public int paginas { get; set; }
-    public int quantidadeFilmesPorPagina { get; set; }
-    public List<int> generoIds { get; set; }
-    public string Ator { get; set; }
+    public int Paginas { get; set; }
+    public int QuantidadeFilmesPorPagina { get; set; }
+    public List<int> GeneroIds { get; set; } = new List<int>();
+    public string? Ator { get; set; }
 
     public OrdenacaoAvaliacao OrdenacaoAvaliacao { get; set; }
+
+    public class GetFilmesValidator : AbstractValidator<GetFilmesRequest> 
+    {
+        public GetFilmesValidator() 
+        {
+            RuleFor(g => g.GeneroIds).NotNull().NotEmpty();
+        } 
+    }
 }
 
 public class GetFilmesRequestHandler : IRequestHandler<GetFilmesRequest, ListaDeFilmesDto>
@@ -24,7 +33,7 @@ public class GetFilmesRequestHandler : IRequestHandler<GetFilmesRequest, ListaDe
     }
     public async Task<ListaDeFilmesDto> Handle(GetFilmesRequest request, CancellationToken cancellationToken)
     {
-        var filmesFiltrados = await filmeRepository.GetFilmes(request.paginas, request.quantidadeFilmesPorPagina, request.generoIds, request.Ator, request.OrdenacaoAvaliacao);
+        var filmesFiltrados = await filmeRepository.GetFilmes(request.Paginas, request.QuantidadeFilmesPorPagina, request.GeneroIds, request.Ator, request.OrdenacaoAvaliacao);
 
         var listaDeFilmes = new ListaDeFilmesDto
         {

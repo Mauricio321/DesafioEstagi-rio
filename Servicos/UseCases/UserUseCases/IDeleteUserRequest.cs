@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Servicos.RepositoryInterfaces;
 
 namespace Servicos.UseCases.UserUseCases
@@ -6,6 +7,14 @@ namespace Servicos.UseCases.UserUseCases
     public class DeleteUserRequest : IRequest
     {
         public int Id { get; set; }
+
+        public class DeleteUserValidator : AbstractValidator<DeleteUserRequest> 
+        {
+            public DeleteUserValidator() 
+            {
+                RuleFor(d => d.Id).NotNull().NotEmpty();
+            }    
+        }
     }
 
     public class DeleteUserRequestHandler : IRequestHandler<DeleteUserRequest>

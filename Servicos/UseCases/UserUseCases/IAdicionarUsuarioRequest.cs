@@ -1,5 +1,6 @@
 ﻿using Dominio.Models;
 using FluentResults;
+using FluentValidation;
 using MediatR;
 using Servicos.Erros;
 using Servicos.RepositoryInterfaces;
@@ -15,6 +16,41 @@ public interface IAdicionarUsuarioRequest : IRequest<Result>
     public string Email { get; set; }
     public string Senha { get; set; }
     public int Role { get; }
+
+    public class Validator<TAdicionarUsuarioRequest> : AbstractValidator<TAdicionarUsuarioRequest>
+        where TAdicionarUsuarioRequest : IAdicionarUsuarioRequest
+    {
+        public Validator()
+        {
+            RuleFor(a => a.Senha).MinimumLength(8).WithMessage("A senha deve conter numero e pelo menos 8 digitos")
+                .Must(ValidatePassword).WithMessage("A senha deve conter um caractere especial")
+                .Must(ValidateCapitalLetter).WithMessage("A senha deve conter letra maiuscula");
+
+            RuleFor(e => e.Email).Must(ValidateEmail).WithMessage("Email invalido");
+
+        }
+
+        private static bool ValidatePassword(string password)
+        {
+            string Passwordpattern = @"[@#%&$]";
+
+            return Regex.IsMatch(password, Passwordpattern);
+        }
+
+        private static bool ValidateCapitalLetter(string password)
+        {
+            string passwordCapitaLetter = @"[A-Z]";
+
+            return Regex.IsMatch(password, passwordCapitaLetter);
+        }
+
+        private static bool ValidateEmail(string email)
+        {
+            string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
+            return Regex.IsMatch(email, emailPattern);
+        }
+
+    }
 }
 
 public class AdicionarUsuarioRequest : IAdicionarUsuarioRequest
@@ -35,6 +71,15 @@ public class AdicionarAdministradorRequest : IAdicionarUsuarioRequest
     public string Nome { get; set; }
     public string Email { get; set; }
     public string Senha { get; set; }
+    public IEnumerable<string> Permissions { get; set; } = Enumerable.Empty<string>();
+
+    public class Validator : AbstractValidator<AdicionarAdministradorRequest>
+    {
+        public Validator()
+        {
+            RuleFor(a => a.Permissions).NotEmpty();
+        }
+    }
 }
 
 public class AdicionarUsuarioBaseRequestHandler : IRequestHandler<AdicionarUsuarioRequest, Result>, IRequestHandler<AdicionarAdministradorRequest, Result>
@@ -65,50 +110,19 @@ public class AdicionarUsuarioBaseRequestHandler : IRequestHandler<AdicionarUsuar
             Email = request.Email,
             Senha = hashService.HashPassword(request.Senha, out var salt),
             RoleId = request.Role,
+            Nome = request.Nome,
             Salt = salt
         };
 
         var adminExistente = await userRepository.AdminExistente(request.Email);
-
-        string Passwordpattern = @"[@#%&$]";
-        var PasswordContainsSpecialChar = Regex.IsMatch(request.Senha, Passwordpattern);
-
-        string emailPattern = @"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$";
-        var containsemailPattern = Regex.IsMatch(request.Email, emailPattern);
-
-        string passwordNumbers = @"\d";
-        var passwordContainsNumber = Regex.IsMatch(request.Senha, passwordNumbers);
-
-        string passwordCapitaLetter = @"[A-Z]";
-        var passwordContainsCapitalLetter = Regex.IsMatch(request.Senha, passwordCapitaLetter);
 
         if (adminExistente)
         {
             return Result.Fail(new Forbiden("Conta ja cadastrada"));
         }
 
-        if (!PasswordContainsSpecialChar)
-        {
-            return Result.Fail(new BadRequest("A senha deve conter um caractere especial"));
-        }
-
-        if (!containsemailPattern)
-        {
-            return Result.Fail(new BadRequest("Email invalido"));
-        }
-
-        if (!passwordContainsNumber)
-        {
-            return Result.Fail(new BadRequest("A senha deve conter numero"));
-        }
-
-        if (!passwordContainsCapitalLetter)
-        {
-            return Result.Fail(new BadRequest("A senha deve conter letra maiuscula"));
-        }
-
-        userRepository.AddUser(admin);
-        userRepository.Savechanges();
+        await userRepository.AddUser(admin);
+        await userRepository.Savechanges();
 
         return Result.Ok();
     }
