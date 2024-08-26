@@ -13,7 +13,7 @@ namespace Servicos.UseCases.GeneroUseCases
 {
     public class GetGenerosRequest : IRequest<IEnumerable<Genero>>
     {
-        public List<int> Id { get; set; }   
+        public List<int> Id { get; set; }  = new List<int>();
 
         public class GetGenerosValidator : AbstractValidator<GetGenerosRequest> 
         {

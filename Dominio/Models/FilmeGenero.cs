@@ -2,9 +2,9 @@
 {
     public class FilmeGenero
     {
-        public Filme Filme { get; set; }
+        public Filme Filme { get; set; } = default!;
         public int FilmeId { get; set; }
-        public Genero Genero { get; set; }
+        public Genero Genero { get; set; } = default!;
         public int GeneroId { get; set; }
     }
 }

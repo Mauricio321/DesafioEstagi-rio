@@ -1,14 +1,8 @@
 ﻿using Dominio.Models;
 using Moq;
-using Servicos.DTOs;
 using Servicos.Interfaces;
 using Servicos.RepositoryInterfaces;
 using Servicos.UseCases.FilmeUseCases;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesafioEstagiario.Testes.TestesSucesso.TestesFilmeSucesso
 {

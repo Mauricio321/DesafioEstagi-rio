@@ -5,7 +5,7 @@
 namespace Infraestrutura.Migrations
 {
     /// <inheritdoc />
-    public partial class novasalteracoes : Migration
+    public partial class Novasalteracoes : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

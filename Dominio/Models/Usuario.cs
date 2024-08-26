@@ -9,9 +9,9 @@ namespace Dominio.Models
     public class Usuario
     {
         public int Id { get; set; }
-        public string Nome { get; set; }
-        public string Email { get; set; }
-        public string Senha { get; set; }
+        public string? Nome { get; set; }
+        public required string Email { get; set; }
+        public required string Senha { get; set; }
         public int RoleId { get; set; }
         public byte[] Salt { get; set; } = Array.Empty<byte>();
         public Role Role { get; set; } = default!;

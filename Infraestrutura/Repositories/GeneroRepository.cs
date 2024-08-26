@@ -17,17 +17,20 @@ namespace Infraestrutura.Repositories
             await context.AddAsync(genero);
         }
 
-        public void DeleteGenero(int id)
+        public void DeleteGenero(Genero genero)
         {
-            var generoId = context.Generos.Find(id);
-
-            context.Generos.Remove(generoId);
+            context.Generos.Remove(genero);
         }
 
         public async Task<IEnumerable<Genero>> GenerosDisponiveis()
         {
             var generos = await context.Generos.ToListAsync();
             return generos;
+        }
+
+        public async Task<Genero?> GetGenero(int id)
+        {
+            return await context.Generos.FindAsync(id);
         }
 
         public async Task<IEnumerable<Genero>> GetGeneros(List<int> id)

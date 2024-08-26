@@ -1,6 +1,7 @@
 ﻿using FluentResults;
 using FluentValidation;
 using MediatR;
+using Servicos.Erros;
 using Servicos.Interfaces;
 
 namespace Servicos.UseCases.FilmeUseCases
@@ -19,6 +20,9 @@ namespace Servicos.UseCases.FilmeUseCases
         public async Task<Result> Handle(DeleteFilmeRequest request, CancellationToken cancellationToken)
         {
             var filme = await filmeRepository.FiltrarFilmePorIdAsync(request.Id);
+
+            if (filme is null)
+                return new NaoEncontrado("Filme nao encontrado");
 
             filmeRepository.DeleteFilme(filme);
 

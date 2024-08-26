@@ -2,6 +2,6 @@
 {
     public class ListaDeFilmesDto
     {
-        public IEnumerable<FilmeDTO> Filmes { get; set; }
+        public IEnumerable<FilmeDTO> Filmes { get; set; } =  new List<FilmeDTO>();
     }
 }

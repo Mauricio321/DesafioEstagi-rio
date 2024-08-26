@@ -3,11 +3,6 @@ using Moq;
 using Servicos.Interfaces;
 using Servicos.RepositoryInterfaces;
 using Servicos.UseCases.FilmeUseCases;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DesafioEstagiario.Testes.TestesFalha12345.TesteFilmeFalha
 {
@@ -26,7 +21,7 @@ namespace DesafioEstagiario.Testes.TestesFalha12345.TesteFilmeFalha
         public async Task AdicionarFilmeErro()
         {
             //Arange
-            var generoIds = new List<int> { }; //Genero nulo
+            var generoIds = new List<int> { 2 }; //Genero nao encontrado
 
 
             const string Nome = "Anabelle";

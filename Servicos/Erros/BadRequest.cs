@@ -4,9 +4,9 @@ namespace Servicos.Erros;
 
 public class BadRequest : Error
 {
-    public List<IEnumerable<ValidationFailure>> Failures { get; }
+    public IEnumerable<ValidationFailure> Failures { get; }
 
-    public BadRequest(List<IEnumerable<ValidationFailure>> failures) : base("Requisição mal feita")
+    public BadRequest(IEnumerable<ValidationFailure> failures) : base("Requisição mal feita")
     {
         Failures = failures;
     }

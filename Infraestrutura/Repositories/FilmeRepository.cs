@@ -24,7 +24,7 @@ namespace Infraestrutura.Repositorys
         }
 
 
-        public async Task<IEnumerable<Filme>> GetFilmes(int paginas, int quantidadeFilmesPorPagina, List<int> generoIds, string ator, OrdenacaoAvaliacao ordenacaoAvaliacao)
+        public async Task<IEnumerable<Filme>> GetFilmes(int paginas, int quantidadeFilmesPorPagina, List<int> generoIds, string? ator, OrdenacaoAvaliacao ordenacaoAvaliacao)
         {
             var paginasPassadas = paginas - 1;
 
@@ -32,15 +32,11 @@ namespace Infraestrutura.Repositorys
 
             var filmes = context.Filmes.Include(f => f.Avaliacoes).AsQueryable();
 
-            //filtrar por genero
             if (generoIds != null)
             {
                 filmes = filmes.Where(g => g.Generos == generoIds);
             }
 
-            //filmes = filmes.OrderBy(f => f.Nome);
-
-            //filtrar por ator
             if (ator != null)
             {
                 filmes = filmes.Where(f => f.Atores == ator);

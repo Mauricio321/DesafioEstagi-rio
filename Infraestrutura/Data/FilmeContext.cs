@@ -14,7 +14,6 @@ namespace Infraestrutura.Data
         public DbSet<FilmeGenero> FilmeGeneros { get; set; }
         public DbSet<Avaliacao> Avaliacoes { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
-        public DbSet<Administrador> Administradores { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

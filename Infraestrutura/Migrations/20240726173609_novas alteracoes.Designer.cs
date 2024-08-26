@@ -12,7 +12,7 @@ namespace Infraestrutura.Migrations
 {
     [DbContext(typeof(FilmeContext))]
     [Migration("20240726173609_novas alteracoes")]
-    partial class novasalteracoes
+    partial class Novasalteracoes
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

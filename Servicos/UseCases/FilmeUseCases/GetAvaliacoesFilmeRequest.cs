@@ -2,6 +2,7 @@
 using FluentResults;
 using FluentValidation;
 using MediatR;
+using Servicos.Erros;
 using Servicos.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Servicos.UseCases.FilmeUseCases
 {
-    public class GetAvaliacoesFilmeRequest : IRequest<List<Avaliacao>>
+    public class GetAvaliacoesFilmeRequest : IRequest<Result<List<Avaliacao>>>
     {
         public int id { get; set; }
 
@@ -24,16 +25,19 @@ namespace Servicos.UseCases.FilmeUseCases
         }
     }
 
-    public class GetAvaliacoesFilmeRequestHandler : IRequestHandler<GetAvaliacoesFilmeRequest, List<Avaliacao>>
+    public class GetAvaliacoesFilmeRequestHandler : IRequestHandler<GetAvaliacoesFilmeRequest, Result<List<Avaliacao>>>
     {
         private readonly IFilmeRepository filmeRepository;
         public GetAvaliacoesFilmeRequestHandler(IFilmeRepository filmeRepository)
         {
             this.filmeRepository = filmeRepository;
         }
-        public async Task<List<Avaliacao>> Handle(GetAvaliacoesFilmeRequest request, CancellationToken cancellationToken)
+        public async Task<Result<List<Avaliacao>>> Handle(GetAvaliacoesFilmeRequest request, CancellationToken cancellationToken)
         {
             var avaliacao = await filmeRepository.FiltrarFilmePorId(request.id);
+
+            if (avaliacao is null)
+                return new NaoEncontrado("Filme nao encontrado");
 
             return avaliacao.Avaliacoes.ToList();
         }

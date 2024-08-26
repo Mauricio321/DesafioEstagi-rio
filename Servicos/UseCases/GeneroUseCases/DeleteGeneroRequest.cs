@@ -1,5 +1,7 @@
-﻿using FluentValidation;
+﻿using FluentResults;
+using FluentValidation;
 using MediatR;
+using Servicos.Erros;
 using Servicos.RepositoryInterfaces;
 using System;
 using System.Collections.Generic;
@@ -9,33 +11,38 @@ using System.Threading.Tasks;
 
 namespace Servicos.UseCases.GeneroUseCases
 {
-    public class DeleteGeneroRequest : IRequest
+    public class DeleteGeneroRequest : IRequest<Result>
     {
         public int Id { get; set; }
 
-        public class DeleteGeneroValidator : AbstractValidator<DeleteGeneroRequest> 
+        public class DeleteGeneroValidator : AbstractValidator<DeleteGeneroRequest>
         {
-            public DeleteGeneroValidator() 
+            public DeleteGeneroValidator()
             {
                 RuleFor(d => d.Id).NotNull().NotEmpty();
-            }  
+            }
         }
     }
 
-    public class DeleteGeneroRequestHandler : IRequestHandler<DeleteGeneroRequest>
+    public class DeleteGeneroRequestHandler : IRequestHandler<DeleteGeneroRequest, Result>
     {
         private readonly IGeneroRepository generoRepository;
         public DeleteGeneroRequestHandler(IGeneroRepository generoRepository)
         {
             this.generoRepository = generoRepository;
         }
-        public Task Handle(DeleteGeneroRequest request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(DeleteGeneroRequest request, CancellationToken cancellationToken)
         {
-            generoRepository.DeleteGenero(request.Id);
+            var genero = await generoRepository.GetGenero(request.Id);
 
-            generoRepository.SaveChangesAsync();
+            if (genero is null)
+                return new NaoEncontrado("Genero nao encontrado");
 
-            return Task.CompletedTask;
+            generoRepository.DeleteGenero(genero);
+
+            await generoRepository.SaveChangesAsync();
+
+            return Result.Ok();
         }
     }
 }

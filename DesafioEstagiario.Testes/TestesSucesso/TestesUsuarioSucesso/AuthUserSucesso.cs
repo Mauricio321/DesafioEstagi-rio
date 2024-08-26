@@ -19,7 +19,7 @@ namespace DesafioEstagiario.Testes.TestesSucesso.TestesUsuarioSucesso
         private readonly AuthUserRequestHandler authUser;
         public AuthUserSucesso()
         {
-            authUser = new(mockUserRepository.Object, mockHashService.Object);
+            authUser = new(mockUserRepository.Object, mockHashService.Object, mockTokenService.Object);
         }
 
         public async Task AuthUser()

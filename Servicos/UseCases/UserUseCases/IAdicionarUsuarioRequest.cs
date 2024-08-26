@@ -58,9 +58,9 @@ public class AdicionarUsuarioRequest : IAdicionarUsuarioRequest
     private const int UserRoleId = 2;
     public int Role { get; } = UserRoleId;
 
-    public string Nome { get; set; }
-    public string Email { get; set; }
-    public string Senha { get; set; }
+    public required string Nome { get; set; }
+    public required string Email { get; set; }
+    public required string Senha { get; set; }
 }
 
 public class AdicionarAdministradorRequest : IAdicionarUsuarioRequest
@@ -68,15 +68,16 @@ public class AdicionarAdministradorRequest : IAdicionarUsuarioRequest
     private const int AdminRoleId = 1;
     public int Role { get; } = AdminRoleId;
 
-    public string Nome { get; set; }
-    public string Email { get; set; }
-    public string Senha { get; set; }
+    public required string Nome { get; set; }
+    public required string Email { get; set; }
+    public required string Senha { get; set; }
     public IEnumerable<string> Permissions { get; set; } = Enumerable.Empty<string>();
 
     public class Validator : AbstractValidator<AdicionarAdministradorRequest>
     {
         public Validator()
         {
+            RuleFor(a => a.Senha).Length(10);
             RuleFor(a => a.Permissions).NotEmpty();
         }
     }

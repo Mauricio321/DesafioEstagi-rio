@@ -8,13 +8,13 @@ namespace Dominio.Models
 {
     public class Filme
     {
-        public string? Nome { get; set; }
-        public int FaixaEtaria { get; set; }
-        public int Duracao { get; set; }
-        public string? Direcao { get; set; }
-        public string? AnoDeLancamento { get; set; }
-        public string? Roteiristas { get; set; }
-        public string? Atores { get; set; }
+        public required string Nome { get; set; }
+        public required int FaixaEtaria { get; set; }
+        public required int Duracao { get; set; }
+        public required string Direcao { get; set; }
+        public required string AnoDeLancamento { get; set; }
+        public required string Roteiristas { get; set; }
+        public required string Atores { get; set; }
         public int FilmeId { get; set; }
         public IEnumerable<FilmeGenero> Generos { get; set; } = new List<FilmeGenero>();
         public IEnumerable<Avaliacao> Avaliacoes { get; set; } = new List<Avaliacao>();

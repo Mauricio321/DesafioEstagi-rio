@@ -35,7 +35,7 @@ namespace DesafioEstagiário.IResultError
 
                 if (result.Errors[0] is BadRequest badRequestError)
                 {
-                    return TypedResults.Json(new { badRequestError.Message, badRequestError.Failures });
+                    return TypedResults.Json(new { badRequestError.Message, badRequestError.Failures }, statusCode: StatusCodes.Status400BadRequest);
                 }
 
                 return TypedResults.Json("Algum erro ocorreu no servidor, ligue para a central", statusCode: StatusCodes.Status500InternalServerError);

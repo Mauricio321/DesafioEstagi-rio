@@ -9,6 +9,6 @@ public class FilmeDTO
     public string? AnoDeLancamento { get; set; }
     public string? Roteiristas { get; set; }
     public string? Atores { get; set; }
-    public List<int> GeneroId { get; set; }
+    public List<int> GeneroId { get; set; } = new List<int>();
     public float NotaMedia { get; set; }
 }
