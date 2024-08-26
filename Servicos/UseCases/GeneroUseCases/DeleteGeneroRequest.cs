@@ -31,7 +31,7 @@ namespace Servicos.UseCases.GeneroUseCases
         {
             this.generoRepository = generoRepository;
         }
-        public async Task<Result> Handle(DeleteGeneroRequest request, CancellationToken cancellationToken)
+        public async Task<Result> Handle(DeleteGeneroRequest request, CancellationToken cancellationToken = default)
         {
             var genero = await generoRepository.GetGenero(request.Id);
 
@@ -40,7 +40,7 @@ namespace Servicos.UseCases.GeneroUseCases
 
             generoRepository.DeleteGenero(genero);
 
-            await generoRepository.SaveChangesAsync();
+            await generoRepository.SaveChangesAsync(cancellationToken);
 
             return Result.Ok();
         }

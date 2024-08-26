@@ -12,9 +12,9 @@ namespace Infraestrutura.Repositories
         {
             this.context = context;
         }
-        public async Task AddGenero(Genero genero)
+        public async Task AddGenero(Genero genero, CancellationToken cancellationToken)
         {
-            await context.AddAsync(genero);
+            await context.AddAsync(genero, cancellationToken);
         }
 
         public void DeleteGenero(Genero genero)

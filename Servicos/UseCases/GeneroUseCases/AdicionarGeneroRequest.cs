@@ -35,7 +35,7 @@ public class AdicionarGeneroRequestHandler : IRequestHandler<AdicionarGeneroRequ
             Nome = request.Nome
         };
 
-        await generoRepository.AddGenero(generos);
+        await generoRepository.AddGenero(generos, cancellationToken);
 
         await generoRepository.SaveChangesAsync(cancellationToken);
 

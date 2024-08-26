@@ -4,7 +4,7 @@ namespace Servicos.RepositoryInterfaces
 {
     public interface IGeneroRepository
     {
-        Task AddGenero(Genero genero);
+        Task AddGenero(Genero genero, CancellationToken cancellationToken);
         Task<IEnumerable<Genero>> GetGeneros(List<int> id);
         void DeleteGenero(Genero genero);
         Task SaveChangesAsync(CancellationToken cancellationToken = default);
